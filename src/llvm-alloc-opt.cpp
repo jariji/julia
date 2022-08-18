@@ -1179,7 +1179,9 @@ bool AllocOpt::runOnFunction(Function &F, function_ref<DominatorTree&()> GetDT)
     optimizer.initialize();
     optimizer.optimizeAll();
     bool modified = optimizer.finalize();
+#ifdef JL_VERIFY_PASSES
     assert(!verifyFunction(F, &errs()));
+#endif
     return modified;
 }
 

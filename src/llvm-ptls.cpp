@@ -16,6 +16,7 @@
 #include <llvm/IR/Constants.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/MDBuilder.h>
+#include <llvm/IR/Verifier.h>
 
 #include <llvm/IR/InlineAsm.h>
 #include <llvm/Transforms/Utils/BasicBlockUtils.h>
@@ -291,7 +292,11 @@ struct LowerPTLSLegacy: public ModulePass {
     bool imaging_mode;
     bool runOnModule(Module &M) override {
         LowerPTLS lower(imaging_mode);
-        return lower.runOnModule(M, nullptr);
+        bool modified = lower.runOnModule(M, nullptr);
+#ifdef JL_VERIFY_PASSES
+        assert(!verifyModule(M, &errs()));
+#endif
+        return modified;
     }
 };
 
@@ -306,7 +311,11 @@ static RegisterPass<LowerPTLSLegacy> X("LowerPTLS", "LowerPTLS Pass",
 PreservedAnalyses LowerPTLSPass::run(Module &M, ModuleAnalysisManager &AM) {
     LowerPTLS lower(imaging_mode);
     bool CFGModified = false;
-    if (lower.runOnModule(M, &CFGModified)) {
+    bool modified = lower.runOnModule(M, &CFGModified);
+#ifdef JL_VERIFY_PASSES
+    assert(!verifyModule(M, &errs()));
+#endif
+    if (modified) {
         if (CFGModified) {
             return PreservedAnalyses::none();
         } else {

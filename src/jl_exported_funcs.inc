@@ -377,6 +377,7 @@
     XX(jl_prepend_cwd) \
     XX(jl_printf) \
     XX(jl_print_backtrace) \
+    XX(jl_print_task_backtraces) \
     XX(jl_process_events) \
     XX(jl_profile_clear_data) \
     XX(jl_profile_delay_nsec) \

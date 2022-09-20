@@ -780,7 +780,7 @@ JL_DLLEXPORT void jl_throw(jl_value_t *e JL_MAYBE_UNROOTED)
     }
     if (ct == NULL) // During startup
         jl_no_exc_handler(e);
-    record_backtrace(ct->ptls, 1);
+    //record_backtrace(ct->ptls, 1);
     throw_internal(ct, e);
 }
 
